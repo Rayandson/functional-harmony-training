@@ -38,10 +38,10 @@ export default function WelcomeScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1 bg-blue-50"
+      className="flex-1 bg-background"
     >
       <ScrollView
-        contentContainerClassName="flex-1 justify-center items-center p-6"
+        contentContainerClassName="flex-1 justify-center items-center p-6 min-h-full"
         keyboardShouldPersistTaps="handled"
       >
         <View className="w-full max-w-md">
@@ -50,10 +50,10 @@ export default function WelcomeScreen() {
             <View className="bg-blue-500 rounded-full p-4 mb-4 shadow-lg">
               <Music size={48} color="white" />
             </View>
-            <Text className="text-4xl font-bold text-center text-blue-900 mb-2">
+            <Text className="text-4xl font-bold text-center text-gray-900 mb-2">
               Harmonia Funcional
             </Text>
-            <Text className="text-lg text-center text-blue-700">
+            <Text className="text-lg text-center text-gray-700">
               Treine sua percepção harmônica
             </Text>
           </View>
@@ -61,10 +61,10 @@ export default function WelcomeScreen() {
           {/* Card */}
           <Card className="w-full p-8 gap-6 shadow-xl border border-blue-100 bg-white">
             <View className="gap-1 mb-2">
-              <Text className="text-base font-semibold text-blue-900">
+              <Text className="text-base font-semibold text-gray-900">
                 Digite seu nome
               </Text>
-              <Text className="text-sm text-blue-600">
+              <Text className="text-sm text-gray-600">
                 Comece sua jornada musical
               </Text>
             </View>
@@ -81,7 +81,7 @@ export default function WelcomeScreen() {
                   autoFocus
                   onSubmitEditing={handleSubmit}
                   returnKeyType="done"
-                  className="border-2 border-blue-200 bg-blue-50"
+                  className="border-2 border-blue-200"
                 />
                 {error && (
                   <View className="bg-red-50 border border-red-200 rounded-md p-3">
@@ -106,6 +106,13 @@ export default function WelcomeScreen() {
               Desenvolva sua habilidade de identificar acordes e graus funcionais
             </Text>
           </View>
+        </View>
+
+        {/* Footer */}
+        <View className="mt-auto pb-4 items-center">
+          <Text className="text-xs text-muted-foreground">
+            Desenvolvido por Rayandson Silva
+          </Text>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
