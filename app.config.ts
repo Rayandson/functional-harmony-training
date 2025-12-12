@@ -40,7 +40,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   plugins: ["expo-router", "expo-sqlite", "expo-font", "expo-web-browser"],
   experiments: {
     typedRoutes: true,
-    baseUrl: "/expo-local-first-template",
   },
   extra: {
     eas: {
