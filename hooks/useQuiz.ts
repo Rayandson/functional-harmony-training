@@ -9,20 +9,20 @@ interface UseQuizReturn {
   totalQuestions: number;
   correctAnswers: number;
   isComplete: boolean;
-  startQuiz: (key: MusicalKey, level: QuizLevel | 'custom', customDegrees?: MusicalDegree[]) => void;
-  submitAnswer: (degree: MusicalDegree) => QuizAnswer;
+  startQuiz: (key: MusicalKey, level: QuizLevel | 'custom' | 'progressions', customDegrees?: MusicalDegree[]) => void;
+  submitAnswer: (degree: MusicalDegree | string) => QuizAnswer;
   resetQuiz: () => void;
 }
 
 export function useQuiz(): UseQuizReturn {
   const [session, setSession] = useState<QuizSession | null>(null);
 
-  const startQuiz = useCallback((key: MusicalKey, level: QuizLevel | 'custom', customDegrees?: MusicalDegree[]) => {
+  const startQuiz = useCallback((key: MusicalKey, level: QuizLevel | 'custom' | 'progressions', customDegrees?: MusicalDegree[]) => {
     const newSession = quizService.createSession(key, level, customDegrees);
     setSession(newSession);
   }, []);
 
-  const submitAnswer = useCallback((degree: MusicalDegree): QuizAnswer => {
+  const submitAnswer = useCallback((degree: MusicalDegree | string): QuizAnswer => {
     if (!session) {
       throw new Error('No active quiz session');
     }

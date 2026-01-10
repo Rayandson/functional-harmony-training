@@ -12,15 +12,15 @@ export type QuizLevel = 1 | 2 | 3 | 4 | 5;
 
 export interface QuizQuestion {
   id: string;
-  degree: MusicalDegree;
+  degree: MusicalDegree | string;
   audioUri: string;
-  options: MusicalDegree[];
+  options: (MusicalDegree | string)[];
 }
 
 export interface QuizAnswer {
   questionId: string;
-  selectedDegree: MusicalDegree;
-  correctDegree: MusicalDegree;
+  selectedDegree: MusicalDegree | string;
+  correctDegree: MusicalDegree | string;
   isCorrect: boolean;
 }
 
@@ -35,7 +35,7 @@ export interface QuizResult {
 export interface QuizSession {
   id: string;
   key: MusicalKey;
-  level: QuizLevel | 'custom';
+  level: QuizLevel | 'custom' | 'progressions';
   questions: QuizQuestion[];
   answers: QuizAnswer[];
   currentQuestionIndex: number;
@@ -43,4 +43,4 @@ export interface QuizSession {
   customDegrees?: MusicalDegree[]; // Only set when level is 'custom'
 }
 
-export type QuizMode = 'train-degrees';
+export type QuizMode = 'train-degrees' | 'playground' | 'progressions';

@@ -19,9 +19,9 @@ export default function QuizScreen() {
   const level = params.level;
   const customDegrees = params.customDegrees;
   const { startQuiz, currentQuestion, progress, totalQuestions, submitAnswer, isComplete, session } = useQuiz();
-  const [selectedDegree, setSelectedDegree] = useState<MusicalDegree | null>(null);
+  const [selectedDegree, setSelectedDegree] = useState<MusicalDegree | string | null>(null);
   const [hasAnswered, setHasAnswered] = useState(false);
-  const [answerResult, setAnswerResult] = useState<{ isCorrect: boolean; correctDegree: MusicalDegree } | null>(null);
+  const [answerResult, setAnswerResult] = useState<{ isCorrect: boolean; correctDegree: MusicalDegree | string } | null>(null);
   const autoNextTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [lastQuestion, setLastQuestion] = useState<typeof currentQuestion>(null);
   const [countdown, setCountdown] = useState<number | null>(null);
@@ -33,6 +33,8 @@ export default function QuizScreen() {
         // Parse custom degrees
         const degrees = customDegrees.split(',') as MusicalDegree[];
         startQuiz(key, level, degrees);
+      } else if (level === 'progressions') {
+        startQuiz(key, 'progressions');
       } else {
         const levelNum = parseInt(level || '1', 10) as QuizLevel;
         startQuiz(key, levelNum);
@@ -183,7 +185,7 @@ export default function QuizScreen() {
     return null;
   }
 
-  const handleDegreeSelect = (degree: MusicalDegree) => {
+  const handleDegreeSelect = (degree: MusicalDegree | string) => {
     if (hasAnswered) return;
 
     // Ensure we have a valid question before submitting
@@ -288,19 +290,19 @@ export default function QuizScreen() {
           <Card className="p-6 gap-6">
             <View className="gap-4">
               <Text className="text-2xl font-bold text-center">
-                Qual grau foi tocado?
+                {level === 'progressions' ? 'Qual progressão foi tocada?' : 'Qual grau foi tocado?'}
               </Text>
 
               {!isComplete && (
                 <AudioPlayer
                   audioUri={displayQuestion.audioUri}
-                  label="Ouça o acorde"
+                  label={level === 'progressions' ? 'Ouça a progressão' : 'Ouça o acorde'}
                   shouldStop={hasAnswered || isComplete}
                 />
               )}
 
               <View className="gap-3">
-                {displayQuestion.options.map((degree: MusicalDegree) => {
+                {displayQuestion.options.map((degree: MusicalDegree | string) => {
                   // Show correct answer in green (always when answered)
                   const isCorrectAnswer = hasAnswered && degree === answerResult?.correctDegree;
                   // Show wrong selected answer in red (only if user selected wrong answer)
@@ -332,7 +334,7 @@ export default function QuizScreen() {
                     </Text>
                     {!answerResult?.isCorrect && (
                       <Text className="text-center text-red-600 mt-2">
-                        A resposta correta era: {answerResult?.correctDegree}
+                        A resposta correta era: {level === 'progressions' && typeof answerResult?.correctDegree === 'string' ? answerResult.correctDegree : answerResult?.correctDegree}
                       </Text>
                     )}
                   </View>

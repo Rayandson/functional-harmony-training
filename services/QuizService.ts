@@ -1,5 +1,5 @@
 import type { MusicalKey, MusicalDegree, QuizQuestion, QuizAnswer, QuizSession, QuizLevel } from '@/types';
-import { MUSICAL_DEGREES, QUIZ_LEVELS } from '@/constants/music';
+import { MUSICAL_DEGREES, QUIZ_LEVELS, LIST_PROGRESSIONS } from '@/constants/music';
 import { QUIZ_QUESTIONS_COUNT } from '@/constants/music';
 import { generateId } from '@/utils/id';
 import { audioService } from './AudioService';
@@ -7,7 +7,7 @@ import { audioService } from './AudioService';
 class QuizService {
   generateQuestions(
     key: MusicalKey,
-    level: QuizLevel | 'custom',
+    level: QuizLevel | 'custom' | 'progressions',
     count: number = QUIZ_QUESTIONS_COUNT,
     customDegrees?: MusicalDegree[]
   ): QuizQuestion[] {
@@ -21,6 +21,29 @@ class QuizService {
       allowedDegrees = customDegrees;
       // If exactly 3 degrees, use 3 options; otherwise use 4
       optionsCount = customDegrees.length === 3 ? 3 : 4;
+    } else if (level === 'progressions') {
+      // Logic for progressions
+      const questions: QuizQuestion[] = [];
+      const availableProgressions = [...LIST_PROGRESSIONS].sort(() => Math.random() - 0.5);
+
+      for (let i = 0; i < Math.min(count, availableProgressions.length); i++) {
+        const correctProgression = availableProgressions[i];
+
+        // Generate wrong options
+        const otherProgressions = LIST_PROGRESSIONS.filter(p => p !== correctProgression);
+        const shuffledOthers = [...otherProgressions].sort(() => Math.random() - 0.5);
+        const wrongOptions = shuffledOthers.slice(0, 3);
+
+        const options = [correctProgression, ...wrongOptions].sort(() => Math.random() - 0.5);
+
+        questions.push({
+          id: generateId(),
+          degree: correctProgression,
+          audioUri: audioService.getProgressionAudioUri(correctProgression),
+          options,
+        });
+      }
+      return questions;
     } else {
       const levelConfig = QUIZ_LEVELS[level as QuizLevel];
       allowedDegrees = levelConfig.allowedDegrees;
@@ -104,7 +127,7 @@ class QuizService {
     return questions;
   }
 
-  createSession(key: MusicalKey, level: QuizLevel | 'custom', customDegrees?: MusicalDegree[]): QuizSession {
+  createSession(key: MusicalKey, level: QuizLevel | 'custom' | 'progressions', customDegrees?: MusicalDegree[]): QuizSession {
     const questions = this.generateQuestions(key, level, QUIZ_QUESTIONS_COUNT, customDegrees);
 
     const session: QuizSession = {
@@ -126,7 +149,7 @@ class QuizService {
 
   submitAnswer(
     session: QuizSession,
-    selectedDegree: MusicalDegree
+    selectedDegree: MusicalDegree | string
   ): QuizAnswer {
     // Use the current question index, but ensure it's within bounds
     const questionIndex = session.currentQuestionIndex;
@@ -137,9 +160,6 @@ class QuizService {
 
     const currentQuestion = session.questions[questionIndex];
 
-    if (!currentQuestion) {
-      throw new Error('No current question available');
-    }
 
     const isCorrect = currentQuestion.degree === selectedDegree;
 

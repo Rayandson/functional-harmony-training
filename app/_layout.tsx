@@ -14,6 +14,7 @@ import { getItem, setItem } from "@/lib/storage";
 import { useFrameworkReady } from "@/hooks/useFrameworkReady";
 import { Inter_400Regular, Inter_600SemiBold, useFonts } from '@expo-google-fonts/inter';
 import { useEffect } from "react";
+import { audioService } from "@/services/AudioService";
 
 
 export {
@@ -58,6 +59,10 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
+  useEffect(() => {
+    audioService.setAudioModeAsync();
+  }, []);
+
 
   return (
     <DatabaseProvider>
@@ -83,6 +88,7 @@ export default function RootLayout() {
               <Stack.Screen name="context" options={{ title: "Contexto", headerShown: true }} />
               <Stack.Screen name="quiz" options={{ title: "Quiz", headerShown: true, gestureEnabled: false }} />
               <Stack.Screen name="result" options={{ title: "Resultado", headerShown: true, gestureEnabled: false }} />
+              <Stack.Screen name="playground" options={{ title: "Playground", headerShown: false }} />
             </Stack>
           </BottomSheetModalProvider>
         </GestureHandlerRootView>

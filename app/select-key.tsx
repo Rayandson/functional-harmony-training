@@ -9,12 +9,21 @@ import type { MusicalKey } from '@/types';
 
 export default function SelectKeyScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ level: string; customDegrees?: string }>();
+  const params = useLocalSearchParams<{ level: string; customDegrees?: string; mode?: string }>();
   const level = params.level;
   const customDegrees = params.customDegrees;
+  const mode = params.mode;
 
   const handleSelectKey = (key: MusicalKey) => {
-    const contextParams: Record<string, string> = { key, level };
+    if (mode === 'playground') {
+      router.push({
+        pathname: '/playground',
+        params: { key },
+      });
+      return;
+    }
+
+    const contextParams: Record<string, string> = { key, level: level || '' };
     if (customDegrees) {
       contextParams.customDegrees = customDegrees;
     }
@@ -31,7 +40,9 @@ export default function SelectKeyScreen() {
           <View className="gap-2">
             <Text className="text-3xl font-bold">Selecione o Tom</Text>
             <Text className="text-muted-foreground text-lg">
-              Escolha a tonalidade para o quiz {level === 'custom' ? '(Customizado)' : `(Nível ${level})`}
+              {mode === 'playground'
+                ? 'Escolha a tonalidade para explorar os graus'
+                : `Escolha a tonalidade para o quiz ${level === 'custom' ? '(Customizado)' : `(Nível ${level})`}`}
             </Text>
           </View>
 

@@ -3,11 +3,11 @@ import { View } from 'react-native';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import type { MusicalDegree } from '@/types';
-import { DEGREE_NAMES } from '@/constants/music';
+import { DEGREE_NAMES, ROMAN_TO_NATURAL } from '@/constants/music';
 
 interface DegreeButtonProps {
-  degree: MusicalDegree;
-  onPress: (degree: MusicalDegree) => void;
+  degree: MusicalDegree | string;
+  onPress: (degree: MusicalDegree | string) => void;
   isSelected?: boolean;
   isCorrect?: boolean;
   isWrong?: boolean;
@@ -53,6 +53,16 @@ export function DegreeButton({
     return '';
   };
 
+  const formatDisplay = (val: string) => {
+    if (val.includes('-')) {
+      const natural = val.split('-').map(d => ROMAN_TO_NATURAL[d] || d).join('-');
+      return `${val} (${natural})`;
+    }
+    return val;
+  };
+
+  const isProgression = typeof degree === 'string' && degree.includes('-');
+
   return (
     <Button
       onPress={() => onPress(degree)}
@@ -66,10 +76,14 @@ export function DegreeButton({
             {isWrong ? '✗' : isCorrect ? '✓' : ''}
           </Text>
         )}
-        <Text className={`text-lg font-bold ${getTextColor()}`}>{degree}</Text>
-        <Text className={`text-sm ${isCorrect || isWrong ? 'text-white opacity-90' : 'opacity-80'}`}>
-          {DEGREE_NAMES[degree]}
+        <Text className={`text-lg font-bold ${getTextColor()}`}>
+          {isProgression ? formatDisplay(degree as string) : degree}
         </Text>
+        {!isProgression && (
+          <Text className={`text-sm ${isCorrect || isWrong ? 'text-white opacity-90' : 'opacity-80'}`}>
+            {DEGREE_NAMES[degree as MusicalDegree]}
+          </Text>
+        )}
       </View>
     </Button>
   );

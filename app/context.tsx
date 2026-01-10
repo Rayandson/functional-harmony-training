@@ -50,7 +50,9 @@ export default function ContextScreen() {
           <View className="gap-2">
             <Text className="text-3xl font-bold">Contexto do Tom</Text>
             <Text className="text-muted-foreground text-lg">
-              Ouça o contexto do tom {key} ({KEY_NAMES[key]}) antes de começar
+              {level === 'progressions'
+                ? 'Ouça o contexto do tom antes de identificar as progressões'
+                : `Ouça o contexto do tom ${key} (${KEY_NAMES[key]}) antes de começar`}
             </Text>
           </View>
 

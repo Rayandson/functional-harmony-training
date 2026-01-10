@@ -56,7 +56,7 @@ export default function ResultScreen() {
             <View className="gap-2 items-center">
               <Text className="text-3xl font-bold">{getPerformanceMessage()}</Text>
               <Text className="text-muted-foreground text-lg">
-                Tom: {key} ({KEY_NAMES[key]}) - {level === 'custom' ? 'Customizado' : `Nível ${level}`}
+                Tom: {key} ({KEY_NAMES[key]}) - {level === 'custom' ? 'Customizado' : level === 'progressions' ? 'Progressões' : `Nível ${level}`}
               </Text>
             </View>
 
@@ -85,7 +85,7 @@ export default function ResultScreen() {
                   Graus Exercitados
                 </Text>
                 <Text className="text-sm text-center text-muted-foreground">
-                  {exercisedDegrees.map((degree, index) =>
+                  {level === 'progressions' ? 'Treino de progressões harmônicas' : exercisedDegrees.map((degree, index) =>
                     `${degree}${index < exercisedDegrees.length - 1 ? ', ' : ''}`
                   ).join('')}
                 </Text>
